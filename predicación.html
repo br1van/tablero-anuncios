@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Predicación - Cartelera de anuncios</title>
+  <style>
+    :root {
+      --color-primario: #2e3e48;
+      --color-secundario: #3a4a54;
+      --color-hover: #4a5a64;
+      --color-acento: #d4a017;
+      --color-texto: #333333;
+      --color-texto-claro: #f8f8f8;
+      --color-fondo: #f5f7fa;
+      --color-tarjeta: #ffffff;
+      --sombra: 0 4px 12px rgba(0,0,0,0.08);
+      --sombra-hover: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--color-fondo);
+      color: var(--color-texto);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--color-primario);
+      padding: 25px 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      background-image: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+    }
+
+    header h1 {
+      color: var(--color-texto-claro);
+      font-size: 2.2em;
+      margin: 0;
+      letter-spacing: 1px;
+      position: relative;
+      display: inline-block;
+      font-weight: 500;
+    }
+
+    header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: var(--color-acento);
+      border-radius: 3px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 25px;
+      padding-bottom: 50px;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--color-primario);
+      color: var(--color-texto-claro);
+      padding: 12px 25px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+      box-shadow: var(--sombra);
+    }
+
+    .back-button:hover {
+      background-color: var(--color-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .back-button i {
+      margin-right: 8px;
+    }
+
+    .section-card {
+      background-color: var(--color-tarjeta);
+      color: var(--color-texto);
+      padding: 25px;
+      margin-bottom: 25px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease-out;
+      box-shadow: var(--sombra);
+      border-left: 4px solid var(--color-acento);
+    }
+
+    .section-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--sombra-hover);
+      border-left: 4px solid var(--color-primario);
+    }
+
+    .section-card h2 {
+      color: var(--color-primario);
+      margin: 0 0 10px 0;
+      font-size: 1.4em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+
+    .section-card h2 i {
+      margin-right: 12px;
+      color: var(--color-acento);
+    }
+
+    .section-card p {
+      color: #666;
+      margin: 0;
+      font-size: 0.95em;
+    }
+
+    .hidden-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+      background-color: var(--color-tarjeta);
+      margin-bottom: 30px;
+      border-radius: 0 0 10px 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      will-change: max-height;
+    }
+
+    .day {
+      background-color: var(--color-tarjeta);
+      margin: 15px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    .day.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .day-header {
+      padding: 18px;
+      cursor: pointer;
+      font-size: 1.1em;
+      transition: all 0.3s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: var(--color-primario);
+      color: var(--color-texto-claro);
+    }
+
+    .day-header:hover {
+      background-color: var(--color-hover);
+    }
+
+    .day-header .toggle-icon {
+      font-size: 1.3em;
+      transition: transform 0.3s ease;
+      color: var(--color-acento);
+    }
+
+    .day-header.active .toggle-icon {
+      transform: rotate(45deg);
+    }
+
+    .locations {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+      will-change: max-height;
+    }
+
+    .locations-inner {
+      padding: 0;
+    }
+
+    .locations a {
+      display: block;
+      color: var(--color-texto);
+      text-decoration: none;
+      padding: 15px 20px;
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+      margin: 0;
+    }
+
+    .locations a:hover {
+      background-color: rgba(0,0,0,0.02);
+      padding-left: 25px;
+      color: var(--color-primario);
+    }
+
+    .locations a:last-child {
+      border-bottom: none;
+    }
+
+    .map-container {
+      width: 100%;
+      height: 400px;
+      margin: 20px 0;
+      background: var(--color-tarjeta);
+      border-radius: 8px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+      overflow: hidden;
+    }
+
+    .map-container img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .map-container img:hover {
+      transform: scale(1.02);
+    }
+
+    .zoom-info {
+      padding: 25px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      background-color: var(--color-tarjeta);
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    .zoom-info.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .zoom-info p {
+      margin: 10px 0;
+      font-size: 1.1em;
+      color: var(--color-texto);
+    }
+
+    .zoom-link {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--color-acento);
+      color: var(--color-texto);
+      padding: 12px 25px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+      box-shadow: var(--sombra);
+    }
+
+    .zoom-link:hover {
+      background-color: #e0b020;
+      transform: translateY(-2px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .zoom-link i {
+      margin-right: 8px;
+    }
+
+    .expanded {
+      max-height: 3000px !important;
+      transition: max-height 0.7s cubic-bezier(0.25, 0.1, 0.25, 1);
+      padding: 20px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+    }
+
+    @media screen and (max-width: 768px) {
+      .container {
+        padding: 0 20px;
+      }
+      
+      .section-card {
+        padding: 20px;
+      }
+      
+      .map-container {
+        height: 350px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .container {
+        padding: 0 15px;
+      }
+      
+      .section-card h2 {
+        font-size: 1.2em;
+      }
+      
+      .day-header {
+        padding: 15px;
+      }
+      
+      .locations a {
+        padding: 12px 15px;
+      }
+      
+      .map-container {
+        height: 250px;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <header>
+    <h1>Predicación</h1>
+  </header>
+  <div class="container">
+    <a href="index.html" class="back-button">
+      <i class="fas fa-arrow-left"></i> Volver a la cartelera
+    </a>
+
+    <div class="section-card" onclick="toggleSection('programaContent', ['mapaContent', 'zoomContent'])">
+      <h2><i class="fas fa-calendar-alt"></i> Programa Semanal</h2>
+      <p>Horarios y ubicaciones de predicación</p>
+    </div>
+
+    <div class="hidden-content" id="programaContent">
+      <!-- Días se generarán automáticamente -->
+    </div>
+
+    <div class="section-card" onclick="toggleSection('mapaContent', ['programaContent', 'zoomContent'])">
+      <h2><i class="fas fa-map-marked-alt"></i> Mapa del Territorio</h2>
+      <p>Ver el mapa de las zonas de predicación</p>
+    </div>
+
+    <div class="hidden-content" id="mapaContent">
+      <div class="map-container">
+        <a href="terr.jpg" target="_blank">
+          <img src="terr.jpg" alt="Mapa del territorio" />
+        </a>
+      </div>
+    </div>
+    
+    <div class="section-card" onclick="toggleSection('zoomContent', ['programaContent', 'mapaContent'])">
+      <h2><i class="fas fa-video"></i> Predicación por Zoom</h2>
+      <p>Información para unirse a las reuniones virtuales</p>
+    </div>
+
+    <div class="hidden-content" id="zoomContent">
+      <div class="zoom-info">
+        <p><strong><i class="fas fa-id-card"></i> ID:</strong> 931 742 2507</p>
+        <p><strong><i class="fas fa-key"></i> Código de acceso:</strong> 191400</p>
+        <a href="https://jworg.zoom.us/j/9317422507?omn=89140292627" class="zoom-link" target="_blank">
+          <i class="fas fa-sign-in-alt"></i> Unirse a la reunión
+        </a>
+      </div>
+    </div>
+
+    <script>
+      let isAnimating = false;
+
+      function toggleSection(showId, hideIds) {
+        if (isAnimating) return;
+        isAnimating = true;
+
+        const showContent = document.getElementById(showId);
+        
+        hideIds.forEach(hideId => {
+          const hideContent = document.getElementById(hideId);
+          if (hideContent && hideContent.classList.contains('expanded')) {
+            hideContent.classList.remove('expanded');
+            hideContent.style.maxHeight = '0';
+
+            if (hideId === 'programaContent') {
+              document.querySelectorAll('.day').forEach(day => {
+                day.classList.remove('visible');
+              });
+            }
+            if (hideId === 'zoomContent') {
+              document.querySelector('.zoom-info').classList.remove('visible');
+            }
+          }
+        });
+
+        if (!showContent.classList.contains('expanded')) {
+          showContent.classList.add('expanded');
+          showContent.style.maxHeight = showContent.scrollHeight + 'px';
+
+          if (showId === 'programaContent') {
+            const days = showContent.querySelectorAll('.day');
+            days.forEach((day, index) => {
+              day.classList.remove('visible');
+              setTimeout(() => {
+                day.classList.add('visible');
+              }, index * 100);
+            });
+          }
+          
+          if (showId === 'zoomContent') {
+            const zoomInfo = document.querySelector('.zoom-info');
+            zoomInfo.classList.remove('visible');
+            setTimeout(() => {
+              zoomInfo.classList.add('visible');
+            }, 100);
+          }
+
+          setTimeout(() => {
+            showContent.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            isAnimating = false;
+          }, 600);
+        } else {
+          showContent.classList.remove('expanded');
+          showContent.style.maxHeight = '0';
+          isAnimating = false;
+        }
+      }
+
+      function toggleDay(header) {
+        const content = header.nextElementSibling;
+        const isOpen = header.classList.contains('active');
+
+        document.querySelectorAll('.day-header').forEach(h => h.classList.remove('active'));
+        document.querySelectorAll('.locations').forEach(loc => loc.style.maxHeight = null);
+
+        if (!isOpen) {
+          header.classList.add('active');
+          content.style.maxHeight = content.scrollHeight + 'px';
+        }
+      }
+
+      // Generar los días automáticamente
+      const dias = [
+        ["Lunes", [
+          ["Pelagio Luna y Carlos Pellegrini - 9:00 AM", "https://maps.google.com/?q=34°29'35.6S 58°40'07.2W"],
+          ["Colpayo y Villa de Mayo - 18:00", "https://maps.google.com/?q=34°29'30.7S 58°39'55.5W"]
+        ]],
+        ["Martes", [
+          ["Segurola y Gabriela Mistral - 9:00 AM", "https://maps.google.com/?q=34°29'28.7S 58°39'35.4W"],
+          ["Pio XII y Maximiliano Matoso - 17:15", "https://maps.google.com/?q=34°29'35.2S 58°39'37.4W"]
+        ]],
+        ["Miércoles", [
+          ["Sanabria y Vélez Sarsfield - 9:00 AM", "https://maps.google.com/?q=34°29'36.4S 58°39'32.8W"],
+          ["José María Márquez y Bartolomé Hidalgo - 18:40", "https://maps.google.com/?q=34°29'49.3S 58°39'36.4W"]
+        ]],
+        ["Jueves", [
+          ["Luis Espinoza y Eva Perón - 9:00 AM", "https://maps.google.com/?q=34°29'44.2S 58°40'23.6W"],
+          ["Oncativo y Villa de Mayo - 18:00", "https://maps.google.com/?q=34°29'53.6S 58°40'23.7W"]
+        ]],
+        ["Viernes", [
+          ["Juan Pujol y Uriburu - 9:00 AM", "https://maps.google.com/?q=34°30'02.8S 58°40'23.6W"],
+          ["Villa de Mayo y Cabildo - 16:20", "https://maps.google.com/?q=34°30'03.6S 58°40'33.9W"]
+        ]],
+        ["Sábado", [
+          ["Cabildo y Sanabria - 9:00 AM", "https://maps.google.com/?q=34°30'14.3S 58°40'21.3W"],
+          ["Sucre y Sarratea - 17:00", "https://maps.google.com/?q=34°30'19.1S 58°40'40.4W"]
+        ]],
+        ["Domingo", [
+          ["Eva Perón y Renacimiento - 9:00 AM", "https://maps.google.com/?q=34°30'14.5S 58°41'01.0W"],
+          ["Reunión - 16:00", "https://maps.google.com/?q=34°30'45.4S 58°40'04.1W"]
+        ]]
+      ];
+
+      const contenedor = document.getElementById('programaContent');
+      dias.forEach(([dia, lugares]) => {
+        const div = document.createElement('div');
+        div.className = 'day';
+        div.innerHTML = `
+          <div class="day-header" onclick="toggleDay(this)">
+            <span>${dia}</span>
+            <span class="toggle-icon">+</span>
+          </div>
+          <div class="locations">
+            <div class="locations-inner">
+              ${lugares.map(([texto, url]) => `<a href="${url}" target="_blank">${texto}</a>`).join("")}
+            </div>
+          </div>
+        `;
+        contenedor.appendChild(div);
+      });
+    </script>
+  </div>
+</body>
+</html>

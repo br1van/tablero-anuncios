@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fechas importantes - Cartelera de anuncios</title>
+  <style>
+    :root {
+      --color-primario: #2e3e48;
+      --color-secundario: #3a4a54;
+      --color-hover: #4a5a64;
+      --color-acento: #d4a017;
+      --color-texto: #333333;
+      --color-texto-claro: #f8f8f8;
+      --color-fondo: #f5f7fa;
+      --color-tarjeta: #ffffff;
+      --sombra: 0 4px 12px rgba(0,0,0,0.08);
+      --sombra-hover: 0 8px 20px rgba(0,0,0,0.12);
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--color-fondo);
+      color: var(--color-texto);
+      margin: 0;
+    }
+    header {
+      background: linear-gradient(135deg, var(--color-primario), var(--color-secundario));
+      color: var(--color-texto-claro);
+      padding: 25px 20px;
+      text-align: center;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2.2em;
+      position: relative;
+    }
+    header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: var(--color-acento);
+      border-radius: 3px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 0 25px;
+    }
+    .back-button {
+      display: inline-block;
+      margin-bottom: 25px;
+      padding: 10px 20px;
+      background-color: var(--color-primario);
+      color: var(--color-texto-claro);
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      box-shadow: var(--sombra);
+      transition: all 0.3s ease;
+    }
+    .back-button:hover {
+      background-color: var(--color-hover);
+      transform: translateY(-2px);
+    }
+    .event {
+      background-color: var(--color-tarjeta);
+      border-left: 4px solid var(--color-acento);
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      box-shadow: var(--sombra);
+    }
+    .event h2 {
+      margin: 0 0 10px 0;
+      color: var(--color-primario);
+      font-size: 1.3em;
+    }
+    .event p {
+      margin: 0;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Fechas importantes</h1>
+  </header>
+
+  <div class="container">
+    <a href="index.html" class="back-button"><i class="fas fa-arrow-left"></i> Volver a la cartelera</a>
+
+    <div class="event">
+      <h2>Visita del Sup. de Circuito</h2>
+      <p><strong>13 al 18 de mayo de 2025</strong></p>
+      <p>Carlos y Silvina Pagura</p>
+      <p>Luego se anunciará localmente los distintos horarios en que lo disfrutaremos.</p>
+    </div>
+
+    <div class="event">
+      <h2>Asamblea de circuito con el representante de la sucursal</h2>
+      <p><strong>“No nos avergonzamos de las buenas noticias”</strong></p>
+      <p><strong>24 de mayo de 2025</strong> – En Ezeiza</p>
+      <p>Horarios: 9:40 - 16:00</p>
+    </div>
+
+    <div class="event">
+      <h2>Asamblea Regional</h2>
+      <p><strong>“Adoración pura”</strong></p>
+      <p><strong>05 al 07 de septiembre de 2025</strong> – En Ezeiza</p>
+      <p>Horarios: a confirmar</p>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/js/all.min.js"></script>
+</body>
+</html>

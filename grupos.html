@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Grupos - Cartelera de anuncios</title>
+  <style>
+    :root {
+      --color-primario: #2e3e48;
+      --color-secundario: #3a4a54;
+      --color-hover: #4a5a64;
+      --color-acento: #d4a017;
+      --color-texto: #333333;
+      --color-texto-claro: #f8f8f8;
+      --color-fondo: #f5f7fa;
+      --color-tarjeta: #ffffff;
+      --sombra: 0 4px 12px rgba(0,0,0,0.08);
+      --sombra-hover: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--color-fondo);
+      color: var(--color-texto);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--color-primario);
+      padding: 25px 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      background-image: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+    }
+
+    header h1 {
+      color: var(--color-texto-claro);
+      font-size: 2.2em;
+      margin: 0;
+      letter-spacing: 1px;
+      position: relative;
+      display: inline-block;
+      font-weight: 500;
+    }
+
+    header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: var(--color-acento);
+      border-radius: 3px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 25px;
+      padding-bottom: 50px;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--color-primario);
+      color: var(--color-texto-claro);
+      padding: 12px 25px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+      box-shadow: var(--sombra);
+    }
+
+    .back-button:hover {
+      background-color: var(--color-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .back-button i {
+      margin-right: 8px;
+    }
+
+    .groups-title {
+      color: var(--color-primario);
+      font-size: 1.8em;
+      margin: 20px 0 30px;
+      text-align: center;
+      position: relative;
+      padding-bottom: 15px;
+    }
+
+    .groups-title::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background-color: var(--color-acento);
+      border-radius: 3px;
+    }
+
+    .group-list {
+      background-color: var(--color-tarjeta);
+      border-radius: 10px;
+      box-shadow: var(--sombra);
+      overflow: hidden;
+    }
+
+    .group-item {
+      border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    .group-item:last-child {
+      border-bottom: none;
+    }
+
+    .group-header {
+      padding: 20px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+      background-color: var(--color-tarjeta);
+    }
+
+    .group-header:hover {
+      background-color: rgba(0,0,0,0.02);
+    }
+
+    .group-header.active {
+      background-color: var(--color-primario);
+      color: var(--color-texto-claro);
+    }
+
+    .group-header h3 {
+      margin: 0;
+      font-size: 1.2em;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+    }
+
+    .group-header h3 i {
+      margin-right: 12px;
+      color: var(--color-acento);
+    }
+
+    .group-header.active h3 i {
+      color: var(--color-texto-claro);
+    }
+
+    .group-toggle {
+      font-size: 1.2em;
+      transition: transform 0.3s ease;
+    }
+
+    .group-header.active .group-toggle {
+      transform: rotate(180deg);
+      color: var(--color-texto-claro);
+    }
+
+    .group-content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+      background-color: rgba(0,0,0,0.02);
+    }
+
+    .members-list {
+      padding: 15px 20px 15px 60px;
+    }
+
+    .member {
+      padding: 10px 0;
+      border-bottom: 1px dashed rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+    }
+
+    .member:last-child {
+      border-bottom: none;
+    }
+
+    .member i {
+      margin-right: 10px;
+      color: var(--color-acento);
+      font-size: 0.8em;
+      width: 20px;
+      text-align: center;
+    }
+
+    .supervisor {
+      font-weight: 500;
+      color: var(--color-acento);
+    }
+
+    .auxiliar {
+      font-style: italic;
+      color: var(--color-primario);
+    }
+
+    @media screen and (max-width: 768px) {
+      .container {
+        padding: 0 20px;
+      }
+      
+      .group-header {
+        padding: 16px;
+      }
+      
+      .group-header h3 {
+        font-size: 1.1em;
+      }
+      
+      .members-list {
+        padding: 12px 15px 12px 50px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .container {
+        padding: 0 15px;
+      }
+      
+      .groups-title {
+        font-size: 1.6em;
+      }
+      
+      .group-header h3 {
+        font-size: 1em;
+      }
+      
+      .members-list {
+        padding: 10px 12px 10px 40px;
+      }
+      
+      .member {
+        font-size: 0.95em;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <header>
+    <h1>Grupos</h1>
+  </header>
+  <div class="container">
+    <a href="index.html" class="back-button">
+      <i class="fas fa-arrow-left"></i> Volver a la cartelera
+    </a>
+
+    <h2 class="groups-title"><i class="fas fa-users"></i> Lista de Grupos</h2>
+
+    <div class="group-list" id="gruposContent">
+      <!-- Grupos se generarán automáticamente -->
+    </div>
+
+    <script>
+      // Función para expandir/colapsar grupos
+      function toggleGroup(header) {
+        const content = header.nextElementSibling;
+        const isOpen = header.classList.contains('active');
+
+        // Cerrar todos los demás grupos primero
+        document.querySelectorAll('.group-header').forEach(h => {
+          if (h !== header) {
+            h.classList.remove('active');
+            h.nextElementSibling.style.maxHeight = null;
+          }
+        });
+
+        if (!isOpen) {
+          header.classList.add('active');
+          content.style.maxHeight = content.scrollHeight + 'px';
+        } else {
+          header.classList.remove('active');
+          content.style.maxHeight = null;
+        }
+      }
+
+      // Datos de los grupos
+      const grupos = [
+        {
+          nombre: "Grupo 1",
+          miembros: [
+            {nombre: "Aguirre Fiorella", rol: ""},
+            {nombre: "Aguirre Gustavo", rol: ""},
+            {nombre: "Aguirre Luisa", rol: ""},
+            {nombre: "Aguirre Santiago", rol: ""},
+            {nombre: "Barroso, Julieta", rol: ""},
+            {nombre: "Borrás Lucas", rol: ""},
+            {nombre: "Borras Raúl", rol: "auxiliar"},
+            {nombre: "Borrás Susana", rol: ""},
+            {nombre: "Borrás Valentina", rol: ""},
+            {nombre: "Páez Analía", rol: ""},
+            {nombre: "Pereyra Bruno", rol: ""},
+            {nombre: "Russ Rosa", rol: ""},
+            {nombre: "Suarez Fernando", rol: ""},
+            {nombre: "Suarez Mercedes", rol: ""},
+            {nombre: "Taboada Marina", rol: ""},
+            {nombre: "Taboada Nadia", rol: ""},
+            {nombre: "Taboada Rodrigo", rol: "supervisor"}
+          ]
+        },
+        {
+          nombre: "Grupo 2",
+          miembros: [
+            {nombre: "Alegre Sandra", rol: ""},
+            {nombre: "Arcuri Gabriel", rol: "auxiliar"},
+            {nombre: "Arcuri Gabriela", rol: ""},
+            {nombre: "Fernández Nelly", rol: ""},
+            {nombre: "Galbán Pablo", rol: "supervisor"},
+            {nombre: "Galbán Silvia", rol: ""},
+            {nombre: "Gómez Camila", rol: ""},
+            {nombre: "Gómez Gonzalo", rol: ""},
+            {nombre: "Monzón Marcela", rol: ""},
+            {nombre: "Monzón Silvia", rol: ""},
+            {nombre: "Osuna Lucia", rol: ""},
+            {nombre: "Pereyra Daniela", rol: ""},
+            {nombre: "Pereyra Eduardo", rol: ""},
+            {nombre: "Reyes María", rol: ""},
+            {nombre: "Romano Sara", rol: ""},
+            {nombre: "Rubio Leonel", rol: ""},
+            {nombre: "Spinelli, Damián", rol: ""}
+          ]
+        },
+        {
+          nombre: "Grupo 3",
+          miembros: [
+            {nombre: "Alegre Bianca", rol: ""},
+            {nombre: "Alegre Mario", rol: ""},
+            {nombre: "Alegre Mirko", rol: ""},
+            {nombre: "Alegre Paula", rol: ""},
+            {nombre: "Atencio Cecilia", rol: ""},
+            {nombre: "Balba Alicia", rol: ""},
+            {nombre: "Balba Damián", rol: "supervisor"},
+            {nombre: "Balba Melisa", rol: ""},
+            {nombre: "Balba Miguel", rol: ""},
+            {nombre: "Bazán Cecilia", rol: ""},
+            {nombre: "Bazán David", rol: "auxiliar"},
+            {nombre: "González Micaela", rol: ""},
+            {nombre: "Pérez Giselle", rol: ""},
+            {nombre: "Pérez Gustavo", rol: ""},
+            {nombre: "Pérez Kiara", rol: ""},
+            {nombre: "Pérez Mabel", rol: ""}
+          ]
+        },
+        {
+          nombre: "Grupo 4",
+          miembros: [
+            {nombre: "Aguirre Alicia", rol: ""},
+            {nombre: "Aguirre Emilia", rol: ""},
+            {nombre: "Araque Micaela", rol: ""},
+            {nombre: "Araque Wilver", rol: "auxiliar"},
+            {nombre: "Bernardo Gustavo", rol: ""},
+            {nombre: "Bernardo Karina", rol: ""},
+            {nombre: "Costello Lía", rol: ""},
+            {nombre: "Costello Martin", rol: ""},
+            {nombre: "Di Leo Adriana", rol: ""},
+            {nombre: "Galeano Raúl", rol: "supervisor"},
+            {nombre: "Galván María", rol: ""},
+            {nombre: "Ibáñez María Esther", rol: ""},
+            {nombre: "Mendieta Lucila", rol: ""},
+            {nombre: "Ribera Oriana", rol: ""},
+            {nombre: "Riquelme Miguel", rol: ""},
+            {nombre: "Serial Horacio", rol: ""},
+            {nombre: "Zambrano Aitana", rol: ""},
+            {nombre: "Zambrano Joshua", rol: ""},
+            {nombre: "Zambrano Julieta", rol: ""}
+          ]
+        },
+        {
+          nombre: "Grupo 5",
+          miembros: [
+            {nombre: "Brignole Mariano", rol: "supervisor"},
+            {nombre: "Brignole Sandra", rol: ""},
+            {nombre: "Bueno Viviana", rol: ""},
+            {nombre: "Cáceres Gladys", rol: ""},
+            {nombre: "Cáceres Silvia", rol: ""},
+            {nombre: "Diaz Colodrero Ailén", rol: ""},
+            {nombre: "Diaz Colodrero Bryan", rol: ""},
+            {nombre: "Diaz Colodrero Javier", rol: ""},
+            {nombre: "Diaz Colodrero Melody", rol: ""},
+            {nombre: "Diaz Colodrero Romina", rol: ""},
+            {nombre: "Ledesma Dante", rol: ""},
+            {nombre: "Ledesma Verónica", rol: ""},
+            {nombre: "Maldonado Nicolás", rol: "auxiliar"},
+            {nombre: "Medina Patricia", rol: ""},
+            {nombre: "Ortega Norma", rol: ""},
+            {nombre: "Pérez Vanesa", rol: ""},
+            {nombre: "Peverelli Alicia", rol: ""},
+            {nombre: "Pórtela Ángel", rol: ""},
+            {nombre: "Romano Gladis", rol: ""}
+          ]
+        }
+      ];
+
+      // Generar los grupos automáticamente
+      const contenedor = document.getElementById('gruposContent');
+      grupos.forEach((grupo, index) => {
+        const groupItem = document.createElement('div');
+        groupItem.className = 'group-item';
+        
+        const groupHeader = document.createElement('div');
+        groupHeader.className = 'group-header';
+        groupHeader.innerHTML = `
+          <h3><i class="fas fa-user-friends"></i> ${grupo.nombre}</h3>
+          <span class="group-toggle"><i class="fas fa-chevron-down"></i></span>
+        `;
+        groupHeader.onclick = function() { toggleGroup(this); };
+        
+        const groupContent = document.createElement('div');
+        groupContent.className = 'group-content';
+        
+        const membersList = document.createElement('div');
+        membersList.className = 'members-list';
+        
+        // Ordenar miembros: supervisores primero, auxiliares después, luego los demás
+        const miembrosOrdenados = [...grupo.miembros].sort((a, b) => {
+          if (a.rol === "supervisor") return -1;
+          if (b.rol === "supervisor") return 1;
+          if (a.rol === "auxiliar") return -1;
+          if (b.rol === "auxiliar") return 1;
+          return a.nombre.localeCompare(b.nombre);
+        });
+        
+        miembrosOrdenados.forEach(miembro => {
+          const memberDiv = document.createElement('div');
+          memberDiv.className = `member ${miembro.rol}`;
+          
+          let icon = '';
+          if (miembro.rol === "supervisor") {
+            icon = '<i class="fas fa-star"></i>';
+          } else if (miembro.rol === "auxiliar") {
+            icon = '<i class="fas fa-user-shield"></i>';
+          } else {
+            icon = '<i class="fas fa-user"></i>';
+          }
+          
+          memberDiv.innerHTML = `${icon}${miembro.nombre}`;
+          membersList.appendChild(memberDiv);
+        });
+        
+        groupContent.appendChild(membersList);
+        groupItem.appendChild(groupHeader);
+        groupItem.appendChild(groupContent);
+        contenedor.appendChild(groupItem);
+        
+        // Animar la aparición de cada grupo
+        setTimeout(() => {
+          groupItem.style.opacity = '1';
+          groupItem.style.transform = 'translateY(0)';
+        }, index * 100);
+      });
+    </script>
+  </div>
+</body>
+</html>

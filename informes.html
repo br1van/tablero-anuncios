@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Informes y Solicitudes - Cartelera de anuncios</title>
+  <style>
+    :root {
+      --color-primario: #2e3e48;
+      --color-secundario: #3a4a54;
+      --color-hover: #4a5a64;
+      --color-acento: #d4a017;
+      --color-texto: #333333;
+      --color-texto-claro: #f8f8f8;
+      --color-fondo: #f5f7fa;
+      --color-tarjeta: #ffffff;
+      --sombra: 0 4px 12px rgba(0,0,0,0.08);
+      --sombra-hover: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--color-fondo);
+      color: var(--color-texto);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--color-primario);
+      padding: 25px 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      background-image: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+    }
+
+    header h1 {
+      color: var(--color-texto-claro);
+      font-size: 2.2em;
+      margin: 0;
+      letter-spacing: 1px;
+      position: relative;
+      display: inline-block;
+      font-weight: 500;
+    }
+
+    header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: var(--color-acento);
+      border-radius: 3px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 30px auto;
+      padding: 0 25px;
+      padding-bottom: 50px;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--color-primario);
+      color: var(--color-texto-claro);
+      padding: 12px 25px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+      box-shadow: var(--sombra);
+    }
+
+    .back-button:hover {
+      background-color: var(--color-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .back-button i {
+      margin-right: 8px;
+    }
+
+    .form-section {
+      background-color: var(--color-tarjeta);
+      border-radius: 10px;
+      padding: 25px;
+      margin: 30px 0;
+      box-shadow: var(--sombra);
+    }
+
+    .form-section h2 {
+      color: var(--color-primario);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--color-acento);
+      display: flex;
+      align-items: center;
+    }
+
+    .form-section h2 i {
+      margin-right: 12px;
+      color: var(--color-acento);
+    }
+
+    .form-container-wrapper {
+      width: 100%;
+      overflow: hidden;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .form-container {
+      width: 100%;
+      height: 150vh;
+      min-height: 800px;
+      border: none;
+    }
+
+    .form-toggle {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .toggle-btn {
+      background-color: var(--color-primario);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      font-size: 1.1em;
+      box-shadow: var(--sombra);
+    }
+
+    .toggle-btn i {
+      margin-right: 10px;
+    }
+
+    .toggle-btn:hover {
+      background-color: var(--color-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .toggle-btn.active {
+      background-color: var(--color-acento);
+      color: var(--color-texto);
+      transform: translateY(-2px);
+    }
+
+    @media screen and (max-width: 768px) {
+      .container {
+        padding: 0 15px;
+      }
+      
+      .form-container {
+        height: 120vh;
+        min-height: 600px;
+      }
+      
+      .toggle-btn {
+        padding: 12px 20px;
+        font-size: 1em;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      header h1 {
+        font-size: 1.8em;
+      }
+      
+      .form-section {
+        padding: 20px 15px;
+      }
+      
+      .form-container {
+        height: 130vh;
+        min-height: 500px;
+      }
+      
+      .toggle-btn {
+        padding: 10px 15px;
+        font-size: 0.9em;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <header>
+    <h1>Informes y Solicitudes</h1>
+  </header>
+  <div class="container">
+    <a href="index.html" class="back-button">
+      <i class="fas fa-arrow-left"></i> Volver a la cartelera
+    </a>
+
+    <div class="form-toggle">
+      <button class="toggle-btn active" onclick="showForm('informe')">
+        <i class="fas fa-chart-line"></i> Informe mensual
+      </button>
+      <button class="toggle-btn" onclick="showForm('precursor')">
+        <i class="fas fa-hands-helping"></i> Precursor auxiliar
+      </button>
+    </div>
+
+    <div class="form-section" id="informe-section">
+      <h2><i class="fas fa-file-alt"></i> Informe Mensual de Predicación</h2>
+      <div class="form-container-wrapper">
+        <iframe class="form-container" 
+                src="https://docs.google.com/forms/d/e/1FAIpQLSdz9IjwtDx7IAEvcM5MeHwOYXLgWl8LnEv2yVhlQDE48Lit2w/viewform?embedded=true&hl=es" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">
+          Cargando formulario...
+        </iframe>
+      </div>
+    </div>
+
+    <div class="form-section" id="precursor-section" style="display:none">
+      <h2><i class="fas fa-hands-helping"></i> Solicitud para Precursor Auxiliar</h2>
+      <div class="form-container-wrapper">
+        <iframe class="form-container"
+                src="https://docs.google.com/forms/d/e/1FAIpQLScX0frspSIT6_3aAGN6664FK0NJ-EoM3hXL45zeOpCXmgdYMg/viewform?embedded=true&hl=es"
+                frameborder="0"
+                marginheight="0"
+                marginwidth="0">
+          Cargando formulario...
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showForm(formType) {
+      const informeSection = document.getElementById('informe-section');
+      const precursorSection = document.getElementById('precursor-section');
+      const buttons = document.querySelectorAll('.toggle-btn');
+
+      // Animación de transición
+      document.querySelectorAll('.form-section').forEach(section => {
+        section.style.opacity = '0';
+        setTimeout(() => {
+          section.style.display = 'none';
+          section.style.opacity = '1';
+        }, 200);
+      });
+
+      buttons.forEach(btn => btn.classList.remove('active'));
+      
+      setTimeout(() => {
+        if(formType === 'informe') {
+          informeSection.style.display = 'block';
+          precursorSection.style.display = 'none';
+          buttons[0].classList.add('active');
+        } else {
+          informeSection.style.display = 'none';
+          precursorSection.style.display = 'block';
+          buttons[1].classList.add('active');
+        }
+      }, 200);
+    }
+
+    // Ajustar altura del iframe al cargar
+    window.addEventListener('load', function() {
+      const iframes = document.querySelectorAll('.form-container');
+      function adjustHeight() {
+        iframes.forEach(iframe => {
+          iframe.style.height = (window.innerHeight * 1.5) + 'px';
+        });
+      }
+      adjustHeight();
+      window.addEventListener('resize', adjustHeight);
+    });
+  </script>
+</body>
+</html>

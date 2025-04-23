@@ -1,0 +1,1597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Reuniones - Cartelera de anuncios</title>
+  <style>
+    :root {
+      --color-primario: #2e3e48;
+      --color-secundario: #3a4a54;
+      --color-hover: #4a5a64;
+      --color-acento: #d4a017;
+      --color-texto: #333333;
+      --color-texto-claro: #f8f8f8;
+      --color-fondo: #f5f7fa;
+      --color-tarjeta: #ffffff;
+      --sombra: 0 4px 12px rgba(0,0,0,0.08);
+      --sombra-hover: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--color-fondo);
+      color: var(--color-texto);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    header {
+      background-color: var(--color-primario);
+      padding: 25px 20px;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+      background-image: linear-gradient(135deg, var(--color-primario) 0%, var(--color-secundario) 100%);
+    }
+
+    header h1 {
+      color: var(--color-texto-claro);
+      font-size: 2.2em;
+      margin: 0;
+      letter-spacing: 1px;
+      position: relative;
+      display: inline-block;
+      font-weight: 500;
+    }
+
+    header h1::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background-color: var(--color-acento);
+      border-radius: 3px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      padding: 0 25px;
+      padding-bottom: 50px;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      background-color: var(--color-primario);
+      color: var(--color-texto-claro);
+      padding: 12px 25px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 500;
+      margin-bottom: 30px;
+      transition: all 0.3s ease;
+      box-shadow: var(--sombra);
+    }
+
+    .back-button:hover {
+      background-color: var(--color-hover);
+      transform: translateY(-2px);
+      box-shadow: var(--sombra-hover);
+    }
+
+    .back-button i {
+      margin-right: 8px;
+    }
+
+    .tab-container {
+      display: flex;
+      margin-bottom: 0;
+      border-bottom: 2px solid var(--color-acento);
+    }
+
+    .tab {
+      padding: 15px 25px;
+      cursor: pointer;
+      font-weight: 500;
+      background-color: var(--color-tarjeta);
+      color: var(--color-primario);
+      border: none;
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      margin-right: 5px;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+    }
+
+    .tab i {
+      margin-right: 10px;
+    }
+
+    .tab:hover {
+      background-color: rgba(0,0,0,0.05);
+    }
+
+    .tab.active {
+      background-color: var(--color-acento);
+      color: var(--color-texto);
+    }
+
+    .content-area {
+      background-color: var(--color-tarjeta);
+      padding: 30px;
+      border-radius: 0 8px 8px 8px;
+      box-shadow: var(--sombra);
+      min-height: 300px;
+      position: relative;
+    }
+
+    .reunion-info {
+      text-align: center;
+    }
+
+    .reunion-info h2 {
+      color: var(--color-primario);
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.5em;
+    }
+
+    .reunion-info p {
+      margin: 15px 0;
+      font-size: 1.1em;
+    }
+
+    .reunion-info strong {
+      color: var(--color-primario);
+    }
+
+    .semanas-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 25px 0;
+      justify-content: center;
+    }
+    
+    .semana-btn {
+      background-color: var(--color-tarjeta);
+      border: 1px solid var(--color-acento);
+      color: var(--color-primario);
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-size: 0.9em;
+      flex: 1;
+      min-width: 120px;
+      text-align: center;
+      box-shadow: var(--sombra);
+    }
+    
+    .semana-btn:hover {
+      background-color: rgba(212, 160, 23, 0.1);
+    }
+    
+    .semana-btn.active {
+      background-color: var(--color-acento);
+      color: var(--color-texto);
+      font-weight: bold;
+    }
+    
+    .programa-detalle, .programa-detalle-fin {
+      display: none;
+      animation: fadeIn 0.3s ease;
+      text-align: left;
+      margin-top: 20px;
+      position: relative;
+    }
+    
+    .programa-detalle.active, .programa-detalle-fin.active {
+      display: block;
+    }
+    
+    .seccion-programa {
+      margin-bottom: 25px;
+    }
+    
+    .seccion-titulo {
+      background-color: var(--color-secundario);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+    
+    .item-programa {
+      display: flex;
+      margin-bottom: 8px;
+      align-items: flex-start;
+    }
+    
+    .hora-programa {
+      width: 60px;
+      font-weight: bold;
+      color: var(--color-primario);
+      text-align: right;
+      padding-right: 10px;
+      margin-top: 2px;
+    }
+    
+    .contenido-programa {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .descripcion-tema {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    
+    .nombre-representante {
+      font-style: italic;
+      color: var(--color-primario);
+      margin-left: 15px;
+      text-align: right;
+      min-width: 180px;
+    }
+    
+    .representantes-dobles {
+      display: flex;
+      flex-direction: column;
+      text-align: right;
+      font-style: italic;
+      color: var(--color-primario);
+      margin-left: 15px;
+      min-width: 180px;
+    }
+    
+    .encabezado-reunion {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    
+    .info-presidente {
+      text-align: right;
+      font-style: italic;
+      color: var(--color-primario);
+    }
+
+    /* Estilos para Zoom */
+    .zoom-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    
+    .zoom-card {
+      background-color: var(--color-tarjeta);
+      border-radius: 10px;
+      padding: 25px;
+      text-align: center;
+      width: 250px;
+      box-shadow: var(--sombra);
+      transition: transform 0.3s ease;
+    }
+    
+    .zoom-card:hover {
+      transform: translateY(-5px);
+    }
+    
+    .zoom-card i {
+      font-size: 2.5em;
+      color: var(--color-acento);
+      margin-bottom: 15px;
+    }
+    
+    .zoom-card h3 {
+      color: var(--color-primario);
+      margin-bottom: 10px;
+    }
+    
+    .zoom-card p {
+      font-size: 1.2em;
+      color: var(--color-texto);
+    }
+    
+    .zoom-link {
+      display: inline-block;
+      background-color: var(--color-acento);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 6px;
+      text-decoration: none;
+      margin-top: 10px;
+      transition: background-color 0.3s ease;
+    }
+    
+    .zoom-link:hover {
+      background-color: #e69500;
+    }
+
+    /* Estilos para el editor */
+    #btnEditar {
+      display: none;
+      margin-top: 20px;
+      background-color: var(--color-acento);
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1em;
+    }
+
+    #modalEdicion {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      z-index: 1000;
+      padding-top: 50px;
+      overflow-y: auto;
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: auto;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 900px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    /* Estilos para el editor avanzado */
+    .editor-tabs {
+      display: flex;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #ddd;
+      flex-wrap: wrap;
+    }
+    
+    .editor-tab {
+      padding: 8px 15px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      margin-right: 5px;
+      margin-bottom: 5px;
+      border-radius: 4px 4px 0 0;
+    }
+    
+    .editor-tab.active {
+      border-color: #ddd;
+      border-bottom-color: white;
+      background: white;
+      color: var(--color-primario);
+      font-weight: bold;
+    }
+    
+    .editor-week-content {
+      display: none;
+    }
+    
+    .editor-week-content.active {
+      display: block;
+    }
+    
+    .editor-section {
+      margin-bottom: 20px;
+      border: 1px solid #eee;
+      padding: 15px;
+      border-radius: 5px;
+      background-color: #f9f9f9;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    
+    .section-title-input {
+      flex-grow: 1;
+      font-weight: bold;
+      font-size: 1.1em;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .editor-items {
+      margin-top: 10px;
+    }
+    
+    .editor-item {
+      display: flex;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: white;
+      border-radius: 4px;
+      border: 1px solid #eee;
+      align-items: center;
+    }
+    
+    .item-time {
+      width: 80px;
+    }
+    
+    .item-time input {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .item-content {
+      flex-grow: 1;
+      margin: 0 10px;
+    }
+    
+    .item-content input {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .item-participants {
+      width: 200px;
+    }
+    
+    .item-participants textarea {
+      width: 100%;
+      padding: 6px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      min-height: 60px;
+      resize: vertical;
+    }
+    
+    .item-actions {
+      width: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .btn-add {
+      background: var(--color-acento);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 0.9em;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    
+    .btn-add:hover {
+      background: #c4950e;
+    }
+    
+    .btn-remove {
+      background: #ff4444;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      width: 24px;
+      height: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 5px;
+    }
+    
+    .btn-remove:hover {
+      background: #cc0000;
+    }
+    
+    .modal-actions {
+      margin-top: 20px;
+      text-align: right;
+      padding-top: 15px;
+      border-top: 1px solid #eee;
+    }
+    
+    .modal-actions button {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.9em;
+      margin-left: 10px;
+    }
+    
+    #btnCancelar {
+      background-color: #ccc;
+      color: #333;
+    }
+    
+    #btnCancelar:hover {
+      background-color: #bbb;
+    }
+    
+    #btnGuardar {
+      background-color: var(--color-acento);
+      color: white;
+    }
+    
+    #btnGuardar:hover {
+      background-color: #c4950e;
+    }
+    
+    .editor-config-section {
+      margin-bottom: 25px;
+      padding: 15px;
+      background-color: #f0f7ff;
+      border-radius: 5px;
+      border: 1px solid #d0e3ff;
+    }
+    
+    .editor-config-section h3 {
+      color: var(--color-primario);
+      margin-top: 0;
+      margin-bottom: 15px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid #d0e3ff;
+    }
+    
+    .config-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 15px;
+    }
+    
+    .config-field {
+      margin-bottom: 10px;
+    }
+    
+    .config-field label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: var(--color-primario);
+    }
+    
+    .config-field input,
+    .config-field textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    
+    .config-field textarea {
+      min-height: 80px;
+    }
+
+    @media screen and (max-width: 768px) {
+      .container {
+        padding: 0 20px;
+      }
+      
+      .tab {
+        padding: 12px 15px;
+        font-size: 0.9em;
+      }
+      
+      .content-area {
+        padding: 20px;
+      }
+
+      .semanas-container {
+        flex-direction: column;
+      }
+      
+      .semana-btn {
+        width: 100%;
+      }
+      
+      .descripcion-tema {
+        flex-direction: column;
+      }
+      
+      .nombre-representante, .representantes-dobles {
+        margin-left: 0;
+        margin-top: 5px;
+        text-align: left;
+        min-width: auto;
+        font-size: 0.9em;
+      }
+      
+      .encabezado-reunion {
+        flex-direction: column;
+      }
+      
+      .info-presidente {
+        text-align: left;
+        margin-top: 10px;
+      }
+      
+      .hora-programa {
+        width: 50px;
+      }
+
+      .zoom-info {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .zoom-card {
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .modal-content {
+        width: 95%;
+        padding: 15px;
+      }
+      
+      .editor-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .item-time,
+      .item-content,
+      .item-participants {
+        width: 100%;
+        margin: 5px 0;
+      }
+      
+      .item-actions {
+        width: 100%;
+        flex-direction: row;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .container {
+        padding: 0 15px;
+      }
+      
+      .tab {
+        padding: 10px 12px;
+        font-size: 0.85em;
+      }
+      
+      .reunion-info p {
+        font-size: 1em;
+      }
+
+      .hora-programa {
+        width: 45px;
+        font-size: 0.9em;
+      }
+      
+      .editor-tabs {
+        flex-direction: column;
+      }
+      
+      .editor-tab {
+        margin-right: 0;
+        margin-bottom: 2px;
+        border-radius: 4px;
+      }
+      
+      .editor-tab.active {
+        border: 1px solid var(--color-acento);
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+  <header>
+    <h1>Reuniones</h1>
+  </header>
+  <div class="container">
+    <a href="index.html" class="back-button">
+      <i class="fas fa-arrow-left"></i> Volver a la cartelera
+    </a>
+
+    <div class="tab-container">
+      <button class="tab active" onclick="showContent('entreSemana')">
+        <i class="fas fa-calendar-day"></i> Entre semana
+      </button>
+      <button class="tab" onclick="showContent('finSemana')">
+        <i class="fas fa-calendar-week"></i> Fin de semana
+      </button>
+      <button class="tab" onclick="showContent('zoom')">
+        <i class="fas fa-video"></i> Conectar por Zoom
+      </button>
+    </div>
+
+    <div class="content-area">
+      <!-- Contenido de Entre semana -->
+      <div id="entreSemana" class="reunion-info" style="display: block;">
+        <h2><i class="fas fa-calendar-day"></i> Reunión de entre semana</h2>
+        <p><strong><i class="fas fa-calendar-alt"></i> Día:</strong> <span id="diaEntreSemana">Jueves</span></p>
+        <p><strong><i class="fas fa-clock"></i> Horario:</strong> <span id="horarioEntreSemana">19:30 hs</span></p>
+        <p><strong><i class="fas fa-map-marker-alt"></i> Lugar:</strong> <span id="lugarEntreSemana">Juan Manzanares 198, B1614 Villa de Mayo, Provincia de Buenos Aires</span></p>
+        
+        <!-- Selector de semanas -->
+        <div class="semanas-container" id="semanasContainer">
+          <!-- Se llena dinámicamente -->
+        </div>
+        
+        <!-- Programas semanales -->
+        <div id="programasContainer">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </div>
+
+      <!-- Contenido de Fin de semana -->
+      <div id="finSemana" class="reunion-info" style="display: none;">
+        <h2><i class="fas fa-calendar-week"></i> Reunión de fin de semana</h2>
+        <p><strong><i class="fas fa-calendar-alt"></i> Día:</strong> <span id="diaFinSemana">Domingo</span></p>
+        <p><strong><i class="fas fa-map-marker-alt"></i> Lugar:</strong> <span id="lugarFinSemana">Juan Manzanares 198, B1614 Villa de Mayo, Provincia de Buenos Aires</span></p>
+        
+        <!-- Programas fin de semana -->
+        <div id="programasFinSemanaContainer">
+          <!-- Se llena dinámicamente -->
+        </div>
+      </div>
+
+      <!-- Contenido de Zoom -->
+      <div id="zoom" class="reunion-info" style="display: none;">
+        <h2><i class="fas fa-video"></i> Conectar por Zoom</h2>
+        
+        <div class="zoom-info">
+          <div class="zoom-card">
+            <i class="fas fa-id-card"></i>
+            <h3>ID de reunión</h3>
+            <p id="zoomId">931 742 2507</p>
+          </div>
+          
+          <div class="zoom-card">
+            <i class="fas fa-key"></i>
+            <h3>Código de acceso</h3>
+            <p id="zoomCodigo">191400</p>
+          </div>
+          
+          <div class="zoom-card link-card">
+            <i class="fas fa-link"></i>
+            <h3>Link directo</h3>
+            <a href="https://jworg.zoom.us/j/9317422507?omn=89140292627" target="_blank" class="zoom-link" id="zoomLink">
+              <i class="fas fa-external-link-alt"></i> Unirse a la reunión
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botón de edición -->
+      <button id="btnEditar">
+        <i class="fas fa-edit"></i> Editar Contenido
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal de edición -->
+  <div id="modalEdicion">
+    <div class="modal-content">
+      <h2 style="color: var(--color-primario); margin-bottom: 20px;">
+        <i class="fas fa-edit"></i> Editor de Reuniones
+      </h2>
+      
+      <div id="editorContenido">
+        <!-- Se generará dinámicamente -->
+      </div>
+      
+      <div class="modal-actions">
+        <button id="btnCancelar">
+          <i class="fas fa-times"></i> Cancelar
+        </button>
+        <button id="btnGuardar">
+          <i class="fas fa-save"></i> Guardar Cambios
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Contraseña de administrador (cámbiala por una segura)
+    const ADMIN_PASSWORD = "congre123";
+    
+    // Datos completos editables
+    let editableData = {
+      config: {
+        entreSemana: {
+          dia: "Jueves",
+          horario: "19:30 hs",
+          lugar: "Juan Manzanares 198, B1614 Villa de Mayo, Provincia de Buenos Aires"
+        },
+        finSemana: {
+          dia: "Domingo",
+          lugar: "Juan Manzanares 198, B1614 Villa de Mayo, Provincia de Buenos Aires"
+        },
+        zoom: {
+          id: "931 742 2507",
+          codigo: "191400",
+          link: "https://jworg.zoom.us/j/9317422507?omn=89140292627"
+        }
+      },
+      programas: {
+        semana1: {
+          titulo: "Semana del 21-27 Abril",
+          presidente: "Pablo Galbán",
+          oracionInicial: "Nicolás Maldonado",
+          oracionFinal: "Wilver Araque",
+          secciones: [
+            {
+              titulo: "",
+              items: [
+                { hora: "19:30", tema: "Canción 76", participantes: "" },
+                { hora: "19:35", tema: "Palabras de introducción (1 min.)", participantes: "Pablo Galbán" }
+              ]
+            },
+            {
+              titulo: "TESOROS DE LA BIBLIA",
+              items: [
+                { hora: "19:36", tema: "1- ¿Qué nos hace verdaderamente ricos? (10 min.)", participantes: "Damián Balba" },
+                { hora: "19:46", tema: "2- Busquemos perlas escondidas (10 min.)", participantes: "Miguel Balba" },
+                { hora: "19:56", tema: "3- Lectura de la biblia (4 min.)", participantes: "Dante Ledesma" }
+              ]
+            },
+            {
+              titulo: "SEAMOS MEJORES MAESTROS",
+              items: [
+                { hora: "20:01", tema: "4- Empiece conversaciones (4 min.)", participantes: "Marina Taboada\nLucía Osuna" },
+                { hora: "20:06", tema: "5- Empiece conversaciones (4 min.)", participantes: "Bianca Alegre\nCecilia Atencio" },
+                { hora: "20:11", tema: "6- Haga revisitas (4 min.)", participantes: "Micaela Araque\nAnalía Páez" }
+              ]
+            },
+            {
+              titulo: "NUESTRA VIDA CRISTIANA",
+              items: [
+                { hora: "20:17", tema: "Canción 111", participantes: "" },
+                { hora: "20:22", tema: "7- ¿Que bendiciones enriquecen a los siervos de Dios? (7 min.)", participantes: "Cecilia Atencio" },
+                { hora: "20:29", tema: "8- Informe sobre la actividad del Dpto. Local de Diseño y Construcción", participantes: "Analía Páez" },
+                { hora: "20:37", tema: "9- Estudio bíblico de la congregación (30 min.)", participantes: "Conductor: Rodrigo Taboada\nLector: Gabriel Arcuri" },
+                { hora: "21:07", tema: "Palabras de conclusión", participantes: "Pablo Galbán" },
+                { hora: "21:10", tema: "Canción 115", participantes: "" }
+              ]
+            }
+          ]
+        },
+        semana2: {
+          titulo: "Semana del 28-4 Mayo",
+          presidente: "Pablo Galbán",
+          oracionInicial: "Nicolás Maldonado",
+          oracionFinal: "Wilver Araque",
+          secciones: [
+            {
+              titulo: "",
+              items: [
+                { hora: "19:30", tema: "Canción 76", participantes: "" },
+                { hora: "19:35", tema: "Palabras de introducción (1 min.)", participantes: "Pablo Galbán" }
+              ]
+            },
+            {
+              titulo: "TESOROS DE LA BIBLIA",
+              items: [
+                { hora: "19:36", tema: "1- ¿Qué nos hace verdaderamente ricos? (10 min.)", participantes: "Damián Balba" },
+                { hora: "19:46", tema: "2- Busquemos perlas escondidas (10 min.)", participantes: "Miguel Balba" },
+                { hora: "19:56", tema: "3- Lectura de la biblia (4 min.)", participantes: "Dante Ledesma" }
+              ]
+            },
+            {
+              titulo: "SEAMOS MEJORES MAESTROS",
+              items: [
+                { hora: "20:01", tema: "4- Empiece conversaciones (4 min.)", participantes: "Marina Taboada\nLucía Osuna" },
+                { hora: "20:06", tema: "5- Empiece conversaciones (4 min.)", participantes: "Bianca Alegre\nCecilia Atencio" },
+                { hora: "20:11", tema: "6- Haga revisitas (4 min.)", participantes: "Micaela Araque\nAnalía Páez" }
+              ]
+            },
+            {
+              titulo: "NUESTRA VIDA CRISTIANA",
+              items: [
+                { hora: "20:17", tema: "Canción 111", participantes: "" },
+                { hora: "20:22", tema: "7- ¿Que bendiciones enriquecen a los siervos de Dios? (7 min.)", participantes: "Cecilia Atencio" },
+                { hora: "20:29", tema: "8- Informe sobre la actividad del Dpto. Local de Diseño y Construcción", participantes: "Analía Páez" },
+                { hora: "20:37", tema: "9- Estudio bíblico de la congregación (30 min.)", participantes: "Conductor: Rodrigo Taboada\nLector: Gabriel Arcuri" },
+                { hora: "21:07", tema: "Palabras de conclusión", participantes: "Pablo Galbán" },
+                { hora: "21:10", tema: "Canción 115", participantes: "" }
+              ]
+            }
+          ]
+        },
+        semana3: {
+          titulo: "Semana del 5-11 Mayo",
+          presidente: "Pablo Galbán",
+          oracionInicial: "Nicolás Maldonado",
+          oracionFinal: "Wilver Araque",
+          secciones: [
+            // ... estructura similar
+          ]
+        },
+        semana4: {
+          titulo: "Semana del 12-18 Mayo",
+          presidente: "Pablo Galbán",
+          oracionInicial: "Nicolás Maldonado",
+          oracionFinal: "Wilver Araque",
+          secciones: [
+            // ... estructura similar
+          ]
+        }
+      },
+      finSemana: {
+        semana1: {
+          titulo: "Semana del 21-27 Abril",
+          presidente: "Pablo Galbán",
+          lectorAtalaya: "Wilver Araque",
+          visitantes: [
+            {
+              tema: "¿Cuándo y por qué vendrá el verdadero Armagedón?",
+              orador: "Ricardo Gimenez",
+              congregacion: "Oeste D. Torcuato"
+            }
+          ],
+          salidas: [
+            {
+              tema: "¿Quién es como nuestro Dios es Jehová?",
+              orador: "Mariano Brignole",
+              congregacion: "Oeste D. Torcuato",
+              direccion: "Entre Ríos 1785 esq. Bolivia"
+            }
+          ]
+        }
+        // ... más semanas fin de semana
+      }
+    };
+
+    // Elementos de la UI
+    const btnEditar = document.getElementById('btnEditar');
+    const modalEdicion = document.getElementById('modalEdicion');
+    const editorContenido = document.getElementById('editorContenido');
+    const btnCancelar = document.getElementById('btnCancelar');
+    const btnGuardar = document.getElementById('btnGuardar');
+    const semanasContainer = document.getElementById('semanasContainer');
+    const programasContainer = document.getElementById('programasContainer');
+    const programasFinSemanaContainer = document.getElementById('programasFinSemanaContainer');
+
+    // Al cargar la página
+    document.addEventListener('DOMContentLoaded', function() {
+      // Cargar datos guardados si existen
+      const savedData = localStorage.getItem('reunionesDataCompleta');
+      if (savedData) {
+        editableData = JSON.parse(savedData);
+      }
+      
+      // Renderizar la página
+      actualizarTodoElContenido();
+      
+      // Verificar si se debe mostrar el botón de edición
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has('edit')) {
+        const password = prompt("Ingrese la contraseña de administrador:");
+        if (password === ADMIN_PASSWORD) {
+          btnEditar.style.display = 'block';
+        } else {
+          alert("Contraseña incorrecta");
+        }
+      }
+    });
+
+    // Mostrar el modal de edición
+    btnEditar.addEventListener('click', function() {
+      cargarEditorAvanzado();
+      modalEdicion.style.display = 'block';
+    });
+
+    // Cerrar modal
+    btnCancelar.addEventListener('click', function() {
+      modalEdicion.style.display = 'none';
+    });
+
+    // Guardar cambios
+    btnGuardar.addEventListener('click', function() {
+      guardarCambiosCompletos();
+    });
+
+    // Función para renderizar todo el contenido
+    function actualizarTodoElContenido() {
+      // Actualizar configuración básica
+      document.getElementById('diaEntreSemana').textContent = editableData.config.entreSemana.dia;
+      document.getElementById('horarioEntreSemana').textContent = editableData.config.entreSemana.horario;
+      document.getElementById('lugarEntreSemana').textContent = editableData.config.entreSemana.lugar;
+      
+      document.getElementById('diaFinSemana').textContent = editableData.config.finSemana.dia;
+      document.getElementById('lugarFinSemana').textContent = editableData.config.finSemana.lugar;
+      
+      document.getElementById('zoomId').textContent = editableData.config.zoom.id;
+      document.getElementById('zoomCodigo').textContent = editableData.config.zoom.codigo;
+      document.getElementById('zoomLink').href = editableData.config.zoom.link;
+      
+      // Renderizar semanas y programas
+      renderizarSemanas();
+      renderizarProgramas();
+      renderizarProgramasFinSemana();
+    }
+
+    // Renderizar botones de semanas
+    function renderizarSemanas() {
+      semanasContainer.innerHTML = '';
+      
+      Object.keys(editableData.programas).forEach((semana, index) => {
+        const semanaBtn = document.createElement('div');
+        semanaBtn.className = `semana-btn ${index === 0 ? 'active' : ''}`;
+        semanaBtn.textContent = editableData.programas[semana].titulo;
+        semanaBtn.onclick = () => mostrarSemana(semana);
+        semanasContainer.appendChild(semanaBtn);
+      });
+    }
+
+    // Renderizar programas de entre semana
+    function renderizarProgramas() {
+      programasContainer.innerHTML = '';
+      
+      Object.entries(editableData.programas).forEach(([key, semana], index) => {
+        const programaDiv = document.createElement('div');
+        programaDiv.id = key;
+        programaDiv.className = `programa-detalle ${index === 0 ? 'active' : ''}`;
+        
+        let html = `
+          <div class="encabezado-reunion">
+            <div></div>
+            <div class="info-presidente">
+              <div>Presidente: ${semana.presidente}</div>
+              <div>Oración inicial: ${semana.oracionInicial}</div>
+            </div>
+          </div>`;
+        
+        semana.secciones.forEach(seccion => {
+          if (seccion.titulo) {
+            html += `<div class="seccion-programa">
+              <div class="seccion-titulo">${seccion.titulo}</div>`;
+          } else {
+            html += `<div class="seccion-programa">`;
+          }
+          
+          seccion.items.forEach(item => {
+            html += `<div class="item-programa">
+              <div class="hora-programa">${item.hora}</div>
+              <div class="contenido-programa">
+                <div class="descripcion-tema">
+                  <span>${item.tema}</span>`;
+            
+            if (item.participantes) {
+              const participantes = item.participantes.split('\n');
+              if (participantes.length === 1) {
+                html += `<span class="nombre-representante">${participantes[0]}</span>`;
+              } else {
+                html += `<div class="representantes-dobles">`;
+                participantes.forEach(p => {
+                  html += `<span>${p}</span>`;
+                });
+                html += `</div>`;
+              }
+            }
+            
+            html += `</div></div></div>`;
+          });
+          
+          html += `</div>`;
+        });
+        
+        html += `
+          <div class="info-presidente" style="text-align: right; margin-top: 20px;">
+            Oración final: ${semana.oracionFinal}
+          </div>`;
+        
+        programaDiv.innerHTML = html;
+        programasContainer.appendChild(programaDiv);
+      });
+    }
+
+    // Renderizar programas de fin de semana
+    function renderizarProgramasFinSemana() {
+      programasFinSemanaContainer.innerHTML = '';
+      
+      Object.entries(editableData.finSemana).forEach(([key, semana], index) => {
+        const programaDiv = document.createElement('div');
+        programaDiv.id = `fin-${key}`;
+        programaDiv.className = `programa-detalle-fin ${index === 0 ? 'active' : ''}`;
+        
+        let html = `
+          <div class="encabezado-reunion">
+            <div></div>
+            <div class="info-presidente">
+              <div>Presidente: ${semana.presidente}</div>
+              <div>Lector Atalaya: ${semana.lectorAtalaya}</div>
+            </div>
+          </div>`;
+        
+        // Visitantes
+        html += `<div class="seccion-programa">
+          <div class="seccion-titulo">VISITANTES</div>`;
+        
+        semana.visitantes.forEach(visita => {
+          html += `<div class="item-programa">
+            <div class="hora-programa"></div>
+            <div class="contenido-programa">
+              <div class="descripcion-tema">
+                <span>${visita.tema}</span>
+                <div class="representantes-dobles">
+                  <span>Orador: ${visita.orador}</span>
+                  <span>Congregación: ${visita.congregacion}</span>
+                </div>
+              </div>
+            </div>
+          </div>`;
+        });
+        
+        html += `</div>`;
+        
+        // Salidas
+        html += `<div class="seccion-programa">
+          <div class="seccion-titulo">SALIDAS</div>`;
+        
+        semana.salidas.forEach(salida => {
+          html += `<div class="item-programa">
+            <div class="hora-programa"></div>
+            <div class="contenido-programa">
+              <div class="descripcion-tema">
+                <span>${salida.tema}</span>
+                <div class="representantes-dobles">
+                  <span>Orador: ${salida.orador}</span>
+                  <span>Congregación: ${salida.congregacion}</span>
+                  ${salida.direccion ? `<span>Dirección: ${salida.direccion}</span>` : ''}
+                </div>
+              </div>
+            </div>
+          </div>`;
+        });
+        
+        html += `</div>`;
+        
+        programaDiv.innerHTML = html;
+        programasFinSemanaContainer.appendChild(programaDiv);
+      });
+    }
+
+    // Función para cargar el editor avanzado
+    function cargarEditorAvanzado() {
+      editorContenido.innerHTML = `
+        <div class="editor-tabs">
+          <div class="editor-tab active" onclick="cambiarPestanaEditor('config')">
+            <i class="fas fa-cog"></i> Configuración
+          </div>
+          ${Object.keys(editableData.programas).map((semana, index) => `
+            <div class="editor-tab" onclick="cambiarPestanaEditor('${semana}')">
+              <i class="fas fa-calendar-week"></i> ${editableData.programas[semana].titulo}
+            </div>
+          `).join('')}
+          ${Object.keys(editableData.finSemana).map((semana, index) => `
+            <div class="editor-tab" onclick="cambiarPestanaEditor('fin-${semana}')">
+              <i class="fas fa-calendar-alt"></i> Fin ${editableData.finSemana[semana].titulo}
+            </div>
+          `).join('')}
+        </div>
+        
+        <!-- Editor de Configuración -->
+        <div id="editor-config" class="editor-week-content active">
+          <div class="editor-config-section">
+            <h3><i class="fas fa-calendar-day"></i> Reunión Entre Semana</h3>
+            <div class="config-grid">
+              <div class="config-field">
+                <label>Día:</label>
+                <input type="text" id="edit-config-dia-entre" value="${editableData.config.entreSemana.dia}">
+              </div>
+              <div class="config-field">
+                <label>Horario:</label>
+                <input type="text" id="edit-config-horario-entre" value="${editableData.config.entreSemana.horario}">
+              </div>
+              <div class="config-field">
+                <label>Lugar:</label>
+                <textarea id="edit-config-lugar-entre">${editableData.config.entreSemana.lugar}</textarea>
+              </div>
+            </div>
+          </div>
+          
+          <div class="editor-config-section">
+            <h3><i class="fas fa-calendar-week"></i> Reunión Fin de Semana</h3>
+            <div class="config-grid">
+              <div class="config-field">
+                <label>Día:</label>
+                <input type="text" id="edit-config-dia-fin" value="${editableData.config.finSemana.dia}">
+              </div>
+              <div class="config-field">
+                <label>Lugar:</label>
+                <textarea id="edit-config-lugar-fin">${editableData.config.finSemana.lugar}</textarea>
+              </div>
+            </div>
+          </div>
+          
+          <div class="editor-config-section">
+            <h3><i class="fas fa-video"></i> Configuración Zoom</h3>
+            <div class="config-grid">
+              <div class="config-field">
+                <label>ID de Reunión:</label>
+                <input type="text" id="edit-config-zoom-id" value="${editableData.config.zoom.id}">
+              </div>
+              <div class="config-field">
+                <label>Código de Acceso:</label>
+                <input type="text" id="edit-config-zoom-codigo" value="${editableData.config.zoom.codigo}">
+              </div>
+              <div class="config-field">
+                <label>Link Directo:</label>
+                <input type="text" id="edit-config-zoom-link" value="${editableData.config.zoom.link}">
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Editores para cada semana entre semana -->
+        ${Object.entries(editableData.programas).map(([key, semana]) => `
+          <div id="editor-${key}" class="editor-week-content">
+            <div class="editor-field">
+              <label>Título de la semana:</label>
+              <input type="text" id="edit-${key}-titulo" value="${semana.titulo}" class="full-width">
+            </div>
+            
+            <div class="config-grid">
+              <div class="config-field">
+                <label>Presidente:</label>
+                <input type="text" id="edit-${key}-presidente" value="${semana.presidente}">
+              </div>
+              <div class="config-field">
+                <label>Oración inicial:</label>
+                <input type="text" id="edit-${key}-oracionInicial" value="${semana.oracionInicial}">
+              </div>
+              <div class="config-field">
+                <label>Oración final:</label>
+                <input type="text" id="edit-${key}-oracionFinal" value="${semana.oracionFinal}">
+              </div>
+            </div>
+            
+            ${semana.secciones.map((seccion, secIndex) => `
+              <div class="editor-section" data-section="${secIndex}">
+                <div class="section-header">
+                  <input type="text" class="section-title-input" value="${seccion.titulo}" 
+                         id="edit-${key}-seccion-${secIndex}-titulo" placeholder="Título de sección (dejar vacío si no aplica)">
+                </div>
+                
+                <div class="editor-items">
+                  ${seccion.items.map((item, itemIndex) => `
+                    <div class="editor-item" data-item="${itemIndex}">
+                      <div class="item-time">
+                        <input type="text" value="${item.hora}" 
+                               id="edit-${key}-seccion-${secIndex}-item-${itemIndex}-hora" placeholder="Hora">
+                      </div>
+                      <div class="item-content">
+                        <input type="text" value="${item.tema}" 
+                               id="edit-${key}-seccion-${secIndex}-item-${itemIndex}-tema" placeholder="Tema o descripción">
+                      </div>
+                      <div class="item-participants">
+                        <textarea id="edit-${key}-seccion-${secIndex}-item-${itemIndex}-participants" 
+                                  placeholder="Participantes (uno por línea)">${item.participantes}</textarea>
+                      </div>
+                      <div class="item-actions">
+                        <button class="btn-remove" onclick="eliminarItem('${key}', ${secIndex}, ${itemIndex})">
+                          <i class="fas fa-times"></i>
+                        </button>
+                      </div>
+                    </div>
+                  `).join('')}
+                </div>
+                
+                <button class="btn-add" onclick="agregarItem('${key}', ${secIndex})">
+                  <i class="fas fa-plus"></i> Añadir ítem
+                </button>
+              </div>
+            `).join('')}
+          </div>
+        `).join('')}
+        
+        <!-- Editores para cada semana fin de semana -->
+        ${Object.entries(editableData.finSemana).map(([key, semana]) => `
+          <div id="editor-fin-${key}" class="editor-week-content">
+            <div class="editor-field">
+              <label>Título de la semana:</label>
+              <input type="text" id="edit-fin-${key}-titulo" value="${semana.titulo}" class="full-width">
+            </div>
+            
+            <div class="config-grid">
+              <div class="config-field">
+                <label>Presidente:</label>
+                <input type="text" id="edit-fin-${key}-presidente" value="${semana.presidente}">
+              </div>
+              <div class="config-field">
+                <label>Lector Atalaya:</label>
+                <input type="text" id="edit-fin-${key}-lectorAtalaya" value="${semana.lectorAtalaya}">
+              </div>
+            </div>
+            
+            <div class="editor-section">
+              <div class="section-header">
+                <h3>Visitantes</h3>
+              </div>
+              
+              <div class="editor-items" id="visitantes-${key}">
+                ${semana.visitantes.map((visita, index) => `
+                  <div class="editor-item" data-item="${index}">
+                    <div class="item-content">
+                      <input type="text" value="${visita.tema}" 
+                             id="edit-fin-${key}-visita-${index}-tema" placeholder="Tema">
+                    </div>
+                    <div class="item-participants">
+                      <input type="text" value="${visita.orador}" 
+                             id="edit-fin-${key}-visita-${index}-orador" placeholder="Orador">
+                      <input type="text" value="${visita.congregacion}" 
+                             id="edit-fin-${key}-visita-${index}-congregacion" placeholder="Congregación" style="margin-top: 5px;">
+                    </div>
+                    <div class="item-actions">
+                      <button class="btn-remove" onclick="eliminarVisita('${key}', ${index})">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+              
+              <button class="btn-add" onclick="agregarVisita('${key}')">
+                <i class="fas fa-plus"></i> Añadir visita
+              </button>
+            </div>
+            
+            <div class="editor-section">
+              <div class="section-header">
+                <h3>Salidas</h3>
+              </div>
+              
+              <div class="editor-items" id="salidas-${key}">
+                ${semana.salidas.map((salida, index) => `
+                  <div class="editor-item" data-item="${index}">
+                    <div class="item-content">
+                      <input type="text" value="${salida.tema}" 
+                             id="edit-fin-${key}-salida-${index}-tema" placeholder="Tema">
+                    </div>
+                    <div class="item-participants">
+                      <input type="text" value="${salida.orador}" 
+                             id="edit-fin-${key}-salida-${index}-orador" placeholder="Orador">
+                      <input type="text" value="${salida.congregacion}" 
+                             id="edit-fin-${key}-salida-${index}-congregacion" placeholder="Congregación" style="margin-top: 5px;">
+                      <input type="text" value="${salida.direccion || ''}" 
+                             id="edit-fin-${key}-salida-${index}-direccion" placeholder="Dirección (opcional)" style="margin-top: 5px;">
+                    </div>
+                    <div class="item-actions">
+                      <button class="btn-remove" onclick="eliminarSalida('${key}', ${index})">
+                        <i class="fas fa-times"></i>
+                      </button>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+              
+              <button class="btn-add" onclick="agregarSalida('${key}')">
+                <i class="fas fa-plus"></i> Añadir salida
+              </button>
+            </div>
+          </div>
+        `).join('')}
+      `;
+    }
+
+    // Funciones auxiliares para el editor
+    function cambiarPestanaEditor(pestana) {
+      document.querySelectorAll('.editor-tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.editor-week-content').forEach(content => content.classList.remove('active'));
+      
+      document.querySelector(`.editor-tab[onclick*="${pestana}"]`).classList.add('active');
+      document.getElementById(`editor-${pestana}`).classList.add('active');
+    }
+
+    function agregarItem(semana, seccionIndex) {
+      if (!editableData.programas[semana].secciones[seccionIndex].items) {
+        editableData.programas[semana].secciones[seccionIndex].items = [];
+      }
+      editableData.programas[semana].secciones[seccionIndex].items.push({ 
+        hora: "", 
+        tema: "", 
+        participantes: "" 
+      });
+      cargarEditorAvanzado();
+    }
+
+    function eliminarItem(semana, seccionIndex, itemIndex) {
+      if (confirm("¿Eliminar este ítem?")) {
+        editableData.programas[semana].secciones[seccionIndex].items.splice(itemIndex, 1);
+        cargarEditorAvanzado();
+      }
+    }
+
+    function agregarVisita(semana) {
+      if (!editableData.finSemana[semana].visitantes) {
+        editableData.finSemana[semana].visitantes = [];
+      }
+      editableData.finSemana[semana].visitantes.push({
+        tema: "",
+        orador: "",
+        congregacion: ""
+      });
+      cargarEditorAvanzado();
+    }
+
+    function eliminarVisita(semana, index) {
+      if (confirm("¿Eliminar esta visita?")) {
+        editableData.finSemana[semana].visitantes.splice(index, 1);
+        cargarEditorAvanzado();
+      }
+    }
+
+    function agregarSalida(semana) {
+      if (!editableData.finSemana[semana].salidas) {
+        editableData.finSemana[semana].salidas = [];
+      }
+      editableData.finSemana[semana].salidas.push({
+        tema: "",
+        orador: "",
+        congregacion: "",
+        direccion: ""
+      });
+      cargarEditorAvanzado();
+    }
+
+    function eliminarSalida(semana, index) {
+      if (confirm("¿Eliminar esta salida?")) {
+        editableData.finSemana[semana].salidas.splice(index, 1);
+        cargarEditorAvanzado();
+      }
+    }
+
+    // Función para guardar todos los cambios
+    function guardarCambiosCompletos() {
+      // Guardar configuración básica
+      editableData.config.entreSemana.dia = document.getElementById('edit-config-dia-entre').value;
+      editableData.config.entreSemana.horario = document.getElementById('edit-config-horario-entre').value;
+      editableData.config.entreSemana.lugar = document.getElementById('edit-config-lugar-entre').value;
+      
+      editableData.config.finSemana.dia = document.getElementById('edit-config-dia-fin').value;
+      editableData.config.finSemana.lugar = document.getElementById('edit-config-lugar-fin').value;
+      
+      editableData.config.zoom.id = document.getElementById('edit-config-zoom-id').value;
+      editableData.config.zoom.codigo = document.getElementById('edit-config-zoom-codigo').value;
+      editableData.config.zoom.link = document.getElementById('edit-config-zoom-link').value;
+      
+      // Guardar programas entre semana
+      Object.keys(editableData.programas).forEach(semana => {
+        editableData.programas[semana].titulo = document.getElementById(`edit-${semana}-titulo`).value;
+        editableData.programas[semana].presidente = document.getElementById(`edit-${semana}-presidente`).value;
+        editableData.programas[semana].oracionInicial = document.getElementById(`edit-${semana}-oracionInicial`).value;
+        editableData.programas[semana].oracionFinal = document.getElementById(`edit-${semana}-oracionFinal`).value;
+        
+        editableData.programas[semana].secciones.forEach((seccion, secIndex) => {
+          seccion.titulo = document.getElementById(`edit-${semana}-seccion-${secIndex}-titulo`).value;
+          
+          seccion.items.forEach((item, itemIndex) => {
+            item.hora = document.getElementById(`edit-${semana}-seccion-${secIndex}-item-${itemIndex}-hora`).value;
+            item.tema = document.getElementById(`edit-${semana}-seccion-${secIndex}-item-${itemIndex}-tema`).value;
+            item.participantes = document.getElementById(`edit-${semana}-seccion-${secIndex}-item-${itemIndex}-participants`).value;
+          });
+        });
+      });
+      
+      // Guardar programas fin de semana
+      Object.keys(editableData.finSemana).forEach(semana => {
+        editableData.finSemana[semana].titulo = document.getElementById(`edit-fin-${semana}-titulo`).value;
+        editableData.finSemana[semana].presidente = document.getElementById(`edit-fin-${semana}-presidente`).value;
+        editableData.finSemana[semana].lectorAtalaya = document.getElementById(`edit-fin-${semana}-lectorAtalaya`).value;
+        
+        // Visitantes
+        editableData.finSemana[semana].visitantes = [];
+        const visitantesContainer = document.getElementById(`visitantes-${semana}`);
+        if (visitantesContainer) {
+          const visitantesItems = visitantesContainer.querySelectorAll('.editor-item');
+          visitantesItems.forEach((item, index) => {
+            editableData.finSemana[semana].visitantes.push({
+              tema: document.getElementById(`edit-fin-${semana}-visita-${index}-tema`).value,
+              orador: document.getElementById(`edit-fin-${semana}-visita-${index}-orador`).value,
+              congregacion: document.getElementById(`edit-fin-${semana}-visita-${index}-congregacion`).value
+            });
+          });
+        }
+        
+        // Salidas
+        editableData.finSemana[semana].salidas = [];
+        const salidasContainer = document.getElementById(`salidas-${semana}`);
+        if (salidasContainer) {
+          const salidasItems = salidasContainer.querySelectorAll('.editor-item');
+          salidasItems.forEach((item, index) => {
+            editableData.finSemana[semana].salidas.push({
+              tema: document.getElementById(`edit-fin-${semana}-salida-${index}-tema`).value,
+              orador: document.getElementById(`edit-fin-${semana}-salida-${index}-orador`).value,
+              congregacion: document.getElementById(`edit-fin-${semana}-salida-${index}-congregacion`).value,
+              direccion: document.getElementById(`edit-fin-${semana}-salida-${index}-direccion`).value
+            });
+          });
+        }
+      });
+      
+      // Guardar en localStorage
+      localStorage.setItem('reunionesDataCompleta', JSON.stringify(editableData));
+      
+      // Actualizar la vista
+      actualizarTodoElContenido();
+      
+      // Cerrar el modal
+      modalEdicion.style.display = 'none';
+      
+      // Notificar al usuario
+      alert("Todos los cambios se guardaron correctamente");
+    }
+
+    // Funciones existentes para manejar pestañas y semanas
+    function showContent(contentId) {
+      document.querySelectorAll('.reunion-info').forEach(content => {
+        content.style.display = 'none';
+      });
+      document.getElementById(contentId).style.display = 'block';
+      
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+    }
+    
+    function mostrarSemana(semanaId) {
+      document.querySelectorAll('.programa-detalle').forEach(programa => {
+        programa.classList.remove('active');
+      });
+      
+      document.querySelectorAll('.semana-btn').forEach(boton => {
+        boton.classList.remove('active');
+      });
+      
+      document.getElementById(semanaId).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+    
+    function mostrarSemanaFin(semanaId) {
+      document.querySelectorAll('.programa-detalle-fin').forEach(programa => {
+        programa.classList.remove('active');
+      });
+      
+      document.querySelectorAll('.semana-btn').forEach(boton => {
+        if(boton.getAttribute('onclick').includes('mostrarSemanaFin')) {
+          boton.classList.remove('active');
+        }
+      });
+      
+      document.getElementById(`fin-${semanaId}`).classList.add('active');
+      event.currentTarget.classList.add('active');
+    }
+  </script>
+</body>
+</html>
